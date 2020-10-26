@@ -16,7 +16,7 @@ namespace christmaslightshow
             Console.WriteLine("Hello World!");
 
             // DateTime timeclock = new DateTime();
-            TimeSpan timeclock = new TimeSpan();
+            // TimeSpan timeclock = new TimeSpan();
             int counter = 0;
             Console.WriteLine("Starting the show!");
 
@@ -66,13 +66,21 @@ namespace christmaslightshow
                 // }
 
                 // // Console.WriteLine("matching lines: {0}", lightsOn.Count);
- 
+
+
                 List<LightShowData> lightsOn = fileData.FindAll(x => x.StartTime == timeConverted);
+
+                var tasks = new List<Task>();
+
                 foreach (var light in lightsOn)
                 {
-                    var tasks = new Task[] {};
-                    TurnOnLightAsync(light.Element, light.Duration);
+                    // TurnOnLightAsync(light.Element, light.Duration);
                     // tasks.Start();
+
+                    // Task.Run(TurnOnLightAsync(light.Element, light.Duration));
+
+                    var task = TurnOnLightAsync(light.Element, light.Duration);
+                    tasks.Add(task);
                 }
 
                 counter++;
@@ -103,7 +111,8 @@ namespace christmaslightshow
         private static async Task TurnOnLightAsync(string lightName, TimeSpan duration)
         {
             Console.WriteLine("Turning on {0} for {1}", lightName, duration.ToString());
-            Thread.Sleep((int)duration.TotalMilliseconds);
+            // Thread.Sleep((int)duration.TotalMilliseconds);
+            await Task.Delay((int)duration.TotalMilliseconds);
             // Console.WriteLine("Duration: {0}, {1}", duration.ToString(), duration.TotalMilliseconds);
             Console.WriteLine("Turning off {0}", lightName);
         }
@@ -178,7 +187,7 @@ namespace christmaslightshow
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("file was not found");
+                Console.WriteLine("File was not found");
             }
 
             reader.Close();
