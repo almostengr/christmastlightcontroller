@@ -1,0 +1,12 @@
+Effect Name,StartTime,EndTime,Duration,Description,Element,ElementType,Files
+On,00:00.000,34:33.00,34:33.00,,WhiteSign1,Model,
+On,00:00.000,34:33.00,34:33.00,,WhiteColumn1,Model,
+On,00:00.000,34:33.00,34:33.00,,WhiteColumn2,Model,
+On,00:00.000,34:33.00,34:33.00,,WhiteColumn3,Model,
+Effect Count,4,,,,,,
+,,,,,,,
+Effect Usage Summary,,,,,,,
+Effect Name,Occurences,TotalTime,,,,,
+On,4,34:33.00,,,,,
+,,,,,,,
+Summary of files used,,,,,,,
