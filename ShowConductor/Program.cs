@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Almostengr.ShowConductor
+﻿namespace Almostengr.Christmaslightshow.ShowConductor
 {
     class Program
     {
