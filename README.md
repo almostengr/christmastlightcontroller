@@ -39,3 +39,13 @@ sudo apt-get install git vlc
 * VLC is used to play the audio files
 * Git is used to clone the repository
 
+## Build From Source Code
+
+Run the command to build the version of your choice from source code. 
+
+```sh
+cd christmaslightshow
+dotnet publish -o lightshow/ -r linux-arm  -c release 
+```
+
+After building, then transfer the files over to your Raspberry Pi.

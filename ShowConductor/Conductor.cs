@@ -54,7 +54,7 @@ namespace Almostengr.Christmaslightshow.ShowConductor
             ExternalProcess.StartInfo.ArgumentList.Add(musicFile); // song name
             ExternalProcess.Start();
 
-            LightController controller = new LightController(ShowDataFiles + "20thCenturyFox.csv");
+            LightController controller = new LightController(sequenceFile);
             controller.ControlLights();
 
             ExternalProcess.WaitForExit();

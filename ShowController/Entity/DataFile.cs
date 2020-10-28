@@ -42,7 +42,7 @@ namespace Almostengr.Christmaslightshow.ShowController
 
                         summaryData = false;
 
-                        Console.WriteLine(DateTime.Now + ": Song/show time: {0}", _ShowSummary.TotalTime.ToString());
+                        Console.WriteLine("Song/show time: {0}", _ShowSummary.TotalTime.ToString());
                         break;
                     }
                     else if (line.StartsWith("Effect Name,Occurences,TotalTime"))
@@ -53,7 +53,7 @@ namespace Almostengr.Christmaslightshow.ShowController
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine(DateTime.Now + ": File was not found");
+                Console.WriteLine("File was not found");
             }
             finally
             {
@@ -65,7 +65,7 @@ namespace Almostengr.Christmaslightshow.ShowController
 
         public IList<EffectSequence> LoadEffectSequencesFromFile()
         {
-            Console.WriteLine(DateTime.Now + ": Reading effect file");
+            Console.WriteLine("Reading effect file");
 
             StreamReader reader = null;
             IList<EffectSequence> effectSequences = new List<EffectSequence>();
@@ -98,7 +98,7 @@ namespace Almostengr.Christmaslightshow.ShowController
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine(DateTime.Now + ": File was not found");
+                Console.WriteLine("File was not found");
             }
             finally
             {

@@ -4,8 +4,11 @@
     {
         static void Main(string[] args)
         {
-            Conductor show = new Conductor();
-            show.CheckClock();
+            Conductor conductor = new Conductor();
+            while (true)
+            {
+                conductor.CheckClock();
+            }
         }
     }
 }

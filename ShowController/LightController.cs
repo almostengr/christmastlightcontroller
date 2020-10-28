@@ -14,10 +14,11 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
         private IList<EffectSequence> EffectSequences { get; set; }
         private char _columnSeparator = ',';
         private ShowSummary _ShowSummary { get; set; }
-        private GpioController gpioController { get; set; }
 
         int MinPinNumber { get; set; }
         int MaxPinNumber { get; set; }
+        PinValue relayOn = PinValue.Low;
+        PinValue relayOff = PinValue.High;
 
         public LightController(string v)
         {
@@ -28,7 +29,7 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
 
         private void LoadEffectSequencesFromFile()
         {
-            Console.WriteLine(DateTime.Now + ": Reading effect file");
+            Console.WriteLine("Reading effect file");
 
             StreamReader reader = null;
 
@@ -60,7 +61,7 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine(DateTime.Now + ": File was not found");
+                Console.WriteLine("File was not found");
             }
             finally
             {
@@ -91,7 +92,7 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
 
                         summaryData = false;
 
-                        Console.WriteLine(DateTime.Now + ": Song/show time: {0}", _ShowSummary.TotalTime.ToString());
+                        Console.WriteLine("Song/show time: {0}", _ShowSummary.TotalTime.ToString());
                         break;
                     }
                     else if (line.StartsWith("Effect Name,Occurences,TotalTime"))
@@ -102,11 +103,19 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine(DateTime.Now + ": File was not found");
+                Console.WriteLine("File was not found");
             }
             finally
             {
                 reader.Close();
+            }
+        }
+
+        private void ShutOffRelays(GpioController controller)
+        {
+            for (int pinNum = MinPinNumber; pinNum <= MaxPinNumber; pinNum++)
+            {
+                controller.Write(pinNum, PinValue.High);
             }
         }
 
@@ -122,7 +131,7 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
 
             LoadShowSummaryFromFile();
 
-            Console.WriteLine(DateTime.Now + ": Now playing: {0}", SongDataPath);
+            Console.WriteLine("Now playing: {0}", SongDataPath);
             TimeSpan showTime = new TimeSpan(0, 0, 0, 0, 0);
 
             using GpioController gpio = new GpioController();
@@ -135,9 +144,17 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
                 gpio.OpenPin(pinNum, PinMode.Output);
             }
 
+            Console.CancelKeyPress += (s, e) =>
+            {
+                Console.WriteLine("Emergency shutdown");
+                ShutOffRelays(gpio);
+            };
+
+            ShutOffRelays(gpio);
+
+            // TODO See if both intervals are needed after testing
             int sleepInterval = 10;
-            var on = PinValue.Low;
-            var off = PinValue.High;
+            int showTimeInterval = 10;
             while (showTime < _ShowSummary.TotalTime)
             {
                 var lights = EffectSequences.Where(x => x.StartTime == showTime || x.EndTime == showTime);
@@ -149,17 +166,19 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
                     int pinNumber = PinLookup(light.Element);
                     if (light.StartTime == showTime)
                     {
-                        gpio.Write(pinNumber, on);
+                        gpio.Write(pinNumber, relayOn);
                     }
                     else
                     {
-                        gpio.Write(pinNumber, off);
+                        gpio.Write(pinNumber, relayOff);
                     }
                 }
 
-                showTime = showTime.Add(TimeSpan.FromMilliseconds(sleepInterval));
+                showTime = showTime.Add(TimeSpan.FromMilliseconds(showTimeInterval));
                 Thread.Sleep(sleepInterval);
             }
+
+            ShutOffRelays(gpio);
         }
 
         private int PinLookup(string lightName)
@@ -175,7 +194,7 @@ namespace Almostengr.Christmaslightshow.ShowController.ShowController
                     break;
 
                 default:
-                    Console.WriteLine(DateTime.Now + ": Not sure. Random number.");
+                    // Console.WriteLine("Not sure. Random number.");
                     return new Random().Next(02, 27);
                     break;
             }
