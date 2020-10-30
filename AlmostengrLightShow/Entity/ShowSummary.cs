@@ -1,6 +1,6 @@
 using System;
 
-namespace Almostengr.Christmaslightshow.ShowController
+namespace AlmostengrLightShow
 {
     public class ShowSummary
     {
@@ -8,18 +8,6 @@ namespace Almostengr.Christmaslightshow.ShowController
         public int Occurrences { get; set; }
         public TimeSpan TotalTime { get; set; }
 
-        // public int TotalTimeInt {get; set;}
-
-        // public void SetTotalTimeInt()
-        // {
-        //     TotalTimeInt = (int)TotalTime.TotalMilliseconds;
-        // }
-
-        public string TimeSpanToString(TimeSpan time)
-        {
-            return time.ToString();
-        }
-        
         public TimeSpan StringToTimeSpan(string time)
         {
             try

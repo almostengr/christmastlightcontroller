@@ -10,9 +10,12 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ShowConductor/bin/Debug/netcoreapp3.1/ShowConductor.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/ShowConductor",
+            "program": "${workspaceFolder}/AlmostengrLightShow/bin/Debug/netcoreapp3.1/AlmostengrLightShow.dll",
+            "args": [
+                "-s",
+                "/home/almostengineer/christmaslightshow/xlights/showData/20thCenturyFox.csv"
+            ],
+            "cwd": "${workspaceFolder}/AlmostengrLightShow",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

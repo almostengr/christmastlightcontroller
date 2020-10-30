@@ -1,6 +1,6 @@
 using System;
 
-namespace Almostengr.Christmaslightshow.ShowController
+namespace AlmostengrLightShow
 {
     public class EffectSequence
     {
@@ -12,11 +12,6 @@ namespace Almostengr.Christmaslightshow.ShowController
         public string Element { get; set; }
         public string ElementType { get; set; }
         public string Files { get; set; }
-
-        public string TimeSpanToString(TimeSpan time)
-        {
-            return time.ToString();
-        }
 
         public TimeSpan StringToTimeSpan(string time)
         {
