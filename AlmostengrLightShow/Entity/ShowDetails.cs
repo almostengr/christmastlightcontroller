@@ -4,14 +4,17 @@ namespace AlmostengrLightShow
 {
     public class ShowDetails
     {
-        public string DataFileName { get; set; }
-        public string MusicFileName { get => DataFileNameToMusicFileName(); }
-        public List<EffectSequence> EffectSequences { get; set; }
-        public ShowSummary ShowSummary { get; set; }
+        public string EffectsFileName { get; set; }
+        public string ModelsFileName { get; set; }
+        public string MusicFileName { get => EffectsFileNameToMusicFileName(); }
+        public List<XLightsEffect> XLightsEffectSequences { get; set; }
+        public XLightsShowSummary XLightsShowSummary { get; set; }
+        public List<XLightsModel> XLightsModels { get; set; }
+        public List<XLightsModelGroup> XLightsModelGroups { get; set; }
 
-        private string DataFileNameToMusicFileName()
+        private string EffectsFileNameToMusicFileName()
         {
-            var name = DataFileName.Replace(".csv", ".mp3");
+            var name = EffectsFileName.Replace(".csv", ".mp3");
             return name;
         }
     }

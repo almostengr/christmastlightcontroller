@@ -2,11 +2,16 @@ using System;
 
 namespace AlmostengrLightShow
 {
-    public class ShowSummary
+    public class XLightsEffect
     {
         public string EffectName { get; set; }
-        public int Occurrences { get; set; }
-        public TimeSpan TotalTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+        public TimeSpan Duration { get; set; }
+        public string Description { get; set; }
+        public string Element { get; set; }
+        public string ElementType { get; set; }
+        public string Files { get; set; }
 
         public TimeSpan StringToTimeSpan(string time)
         {

@@ -1,0 +1,38 @@
+Model Name,Shadowing,Description,Display As,Dimensions,String Type,String Count,Node Count,Light Count,Est Current (Amps),Channels Per Node, Channel Count,Start Channel,Start Channel No,#Universe(or id):Start Channel,End Channel No,Default Buffer W x H,Preview,Controller Ports,Connection Protocol,Connection Attributes,Controller Name,Controller Type,Protocol,Controller Description,IP,Baud,Universe/Id,Universe Channel,Controller Channel,Active
+"AllLights",,"RedTree1, RedTree2, WhiteColumn1, WhiteColumn2, WhiteColumn3, WhiteSign1, WhiteSnowman1, WhiteTree1, WhiteTree2, WhiteWindow1, WhiteWindow2, WhiteWindow3, WhiteWindow4","ModelGroup",,,,,,,,,,,,,400 x 91,Default
+"AllTrees",,"RedTree1, RedTree2, WhiteTree1, WhiteTree2","ModelGroup",,,,,,,,,,,,,288 x 86,Default
+"RedAll",,"RedTree1, RedTree2","ModelGroup",,,,,,,,,,,,,280 x 85,Default
+"RedSpotlights",,"","ModelGroup",,,,,,,,,,,,,1 x 1,Default
+"RedTree1","","","Single Line","","Single Color Red",1,1,50,,1,1,>RedTree2:1,21,#0:0,21,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"RedTree2","","","Single Line","","Single Color Red",1,1,50,,1,1,20,20,#0:0,20,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"RedTrees",,"RedTree1, RedTree2","ModelGroup",,,,,,,,,,,,,280 x 85,Default
+"WhiteAll",,"WhiteColumn1, WhiteColumn2, WhiteColumn3, WhiteSnowman1, WhiteTree1, WhiteTree2, WhiteWindow1, WhiteWindow2, WhiteWindow3, WhiteWindow4","ModelGroup",,,,,,,,,,,,,400 x 91,Default
+"WhiteBush1","","","Window Frame","","RGB Nodes",1,132,132,7.92,3,396,>WhiteBush2:1,402,#0:0,797,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteBush2","","","Window Frame","","RGB Nodes",1,132,132,7.92,3,396,>WhiteWindow3:1,6,#0:0,401,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteBush3","","","Window Frame","","RGB Nodes",1,132,132,7.92,3,396,>WhiteBush1:1,798,#0:0,1193,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteColumn1","","","Single Line","","Single Color White",1,1,50,,1,1,>WhiteColumn2:1,10,#0:0,10,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteColumn2","","","Single Line","","Single Color White",1,1,50,,1,1,>WhiteColumn3:1,9,#0:0,9,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteColumn3","","","Single Line","","Single Color White",1,1,50,,1,1,>WhiteTree1:1,8,#0:0,8,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteColumns",,"WhiteColumn1, WhiteColumn2, WhiteColumn3","ModelGroup",,,,,,,,,,,,,132 x 81,Default
+"WhiteLeftSide",,"WhiteTree1, WhiteWindow1, WhiteWindow2","ModelGroup",,,,,,,,,,,,,240 x 107,Default
+"WhiteOuterColumns",,"WhiteColumn1, WhiteColumn3","ModelGroup",,,,,,,,,,,,,132 x 80,Default
+"WhiteRightSide",,"WhiteTree2, WhiteWindow3, WhiteWindow4","ModelGroup",,,,,,,,,,,,,279 x 126,Default
+"WhiteSign1","","","Window Frame","","Single Color White",1,1,132,,1,1,>WhiteColumn1:1,11,#0:0,11,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteSnowman1","","","Window Frame","","Single Color White",1,1,132,,1,1,>WhiteSign1:1,12,#0:0,12,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteTree1","","","Single Line","","Single Color White",1,1,50,,1,1,>WhiteTree2:1,7,#0:0,7,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteTree2","","","Single Line","","Single Color White",1,1,50,,1,1,>WhiteWindow4:1,6,#0:0,6,1 x 1,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteTrees",,"WhiteTree1, WhiteTree2","ModelGroup",,,,,,,,,,,,,280 x 86,Default
+"WhiteWindow1","","","Window Frame","","Single Color White",1,1,132,,1,1,3,3,#0:0,3,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteWindow2","","","Window Frame","","Single Color White",1,1,132,,1,1,>WhiteWindow1:1,4,#0:0,4,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteWindow3","","","Window Frame","","Single Color White",1,1,132,,1,1,>WhiteWindow2:1,5,#0:0,5,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteWindow4","","","Window Frame","","Single Color White",1,1,132,,1,1,>WhiteWindow2:1,5,#0:0,5,18 x 50,"Default",0,ws2811,,"",Unknown,Unknown,"",,,,0,-1,
+"WhiteWindows",,"WhiteWindow1, WhiteWindow2, WhiteWindow3, WhiteWindow4","ModelGroup",,,,,,,,,,,,,400 x 72,Default
+
+"Model Count",28
+"First Used Channel",3
+"Last Used Channel",1193
+"Actual Used Channel",1191
+"Bulbs",891
+
+
+Controller Name,Start Absolute,End Absolute,Type,Protocol,IP,Comm Port,Baud Rate,Description,Universe/Id,Channels,Active,Suppress Duplicates,Auto Size,FPP Proxy

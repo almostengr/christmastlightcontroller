@@ -1,23 +1,24 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace AlmostengrLightShow
 {
-    public class ProcessDataFile
+    public class ProcessXlightsEffectFile : Processor
     {
         private ConsoleLogger _logger;
-        public string FilePath { get; set; }
+        private string _filePath { get; set; }
         private char _columnSeparator = ',';
         private List<string> _fileContents { get; set; }
 
-        public ProcessDataFile(ConsoleLogger logger)
+        public ProcessXlightsEffectFile(ConsoleLogger logger, string filePath)
         {
             _logger = logger;
             _fileContents = new List<String>();
+            _filePath = filePath;
         }
 
-        public bool LoadFile()
+        public bool LoadEffectFile()
         {
             _logger.Log("Reading effect file");
 
@@ -26,30 +27,32 @@ namespace AlmostengrLightShow
 
             try
             {
-                reader = new StreamReader(File.OpenRead(FilePath));
+                reader = new StreamReader(File.OpenRead(_filePath));
                 while (!reader.EndOfStream)
                 {
                     _fileContents.Add(reader.ReadLine());
                 }
+
                 loadSuccess = true;
+
+                reader.Close();
+                _logger.Log("Done reading effect file");
             }
             catch (FileNotFoundException)
             {
                 _logger.Log("File was not found");
             }
-            finally
+            catch (Exception ex)
             {
-                reader.Close();
+                _logger.Log(string.Concat("Error occurred. ", ex.Message));
             }
-
-            _logger.Log("Done reading effect file");
 
             return loadSuccess;
         }
 
-        public List<EffectSequence> LoadEffectSequencesFromFile()
+        public List<XLightsEffect> LoadEffectSequencesFromFile()
         {
-            List<EffectSequence> effectSequences = new List<EffectSequence>();
+            List<XLightsEffect> effectSequences = new List<XLightsEffect>();
 
             foreach (var line in _fileContents)
             {
@@ -62,17 +65,17 @@ namespace AlmostengrLightShow
                     continue;
                 }
 
-                EffectSequence effectSequence = new EffectSequence();
+                XLightsEffect effectSequence = new XLightsEffect();
                 var splitLine = line.Split(_columnSeparator);
 
-                effectSequence.EffectName = splitLine[0];
+                effectSequence.EffectName = StanitizeCsvValue(splitLine[0]);
                 effectSequence.StartTime = effectSequence.StringToTimeSpan(splitLine[1]);
                 effectSequence.EndTime = effectSequence.StringToTimeSpan(splitLine[2]);
                 effectSequence.Duration = effectSequence.StringToTimeSpan(splitLine[3]);
-                effectSequence.Description = splitLine[4];
-                effectSequence.Element = splitLine[5];
-                effectSequence.ElementType = splitLine[6];
-                effectSequence.Files = splitLine[7];
+                effectSequence.Description = StanitizeCsvValue(splitLine[4]);
+                effectSequence.Element = StanitizeCsvValue(splitLine[5]);
+                effectSequence.ElementType = StanitizeCsvValue(splitLine[6]);
+                effectSequence.Files = StanitizeCsvValue(splitLine[7]);
 
                 effectSequences.Add(effectSequence);
             }
@@ -80,9 +83,9 @@ namespace AlmostengrLightShow
             return effectSequences;
         }
 
-        public ShowSummary LoadShowSummaryFromFile()
+        public XLightsShowSummary LoadShowSummaryFromFile()
         {
-            ShowSummary showSummary = new ShowSummary();
+            XLightsShowSummary showSummary = new XLightsShowSummary();
             bool summaryData = false;
 
             foreach (var line in _fileContents)
@@ -91,7 +94,7 @@ namespace AlmostengrLightShow
                 {
                     var splitLine = line.Split(_columnSeparator);
 
-                    showSummary.EffectName = splitLine[0];
+                    showSummary.EffectName = StanitizeCsvValue(splitLine[0]);
                     showSummary.Occurrences = Int32.Parse(splitLine[1]);
                     showSummary.TotalTime = showSummary.StringToTimeSpan(splitLine[2]);
 

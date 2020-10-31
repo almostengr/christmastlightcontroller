@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AlmostengrLightShow
 {
@@ -27,68 +25,82 @@ namespace AlmostengrLightShow
             }
         }
 
-        public void CheckArguments(string[] arguments)
+        private void CheckArguments(string[] arguments)
         {
             _showDetails = new ShowDetails();
             for (int i = 0; i < arguments.Length; i++)
             {
-                if (arguments[i] == "-s")
+                switch (arguments[i])
                 {
-                    _showDetails.DataFileName = arguments[i + 1];
-                    break;
+                    case "-s":
+                        _showDetails.EffectsFileName = arguments[i + 1];
+                        break;
+                    case "-p":
+                        _showDetails.ModelsFileName = arguments[i + 1];
+                        break;
                 }
             }
         }
 
-        public async Task RunShow(string[] arguments)
+        public string RunShow(string[] arguments)
         {
             CheckArguments(arguments);
 
-            ProcessDataFile dataFile = new ProcessDataFile(_logger);
-            dataFile.FilePath = _showDetails.DataFileName;
-            bool loadSuccessful = dataFile.LoadFile();
+            ProcessXlightsEffectFile effectsFile = new ProcessXlightsEffectFile(_logger, _showDetails.EffectsFileName);
+            bool dataLoadSuccessful = effectsFile.LoadEffectFile();
 
-            if (loadSuccessful == false)
+            ProcessXlightsModelFile modelsFile = new ProcessXlightsModelFile(_logger, _showDetails.ModelsFileName);
+            bool pinLoadSuccessful = modelsFile.LoadModelFile();
+
+            if (dataLoadSuccessful == false || pinLoadSuccessful == false)
             {
-                throw new ApplicationException("Unable to load data file");
+                string message = "Error loading files occurred.";
+                _logger.Log(message);
+                return message;
             }
 
-            _showDetails.EffectSequences = dataFile.LoadEffectSequencesFromFile();
-            _showDetails.ShowSummary = dataFile.LoadShowSummaryFromFile();
+            _showDetails.XLightsEffectSequences = effectsFile.LoadEffectSequencesFromFile();
+            _showDetails.XLightsShowSummary = effectsFile.LoadShowSummaryFromFile();
+            _showDetails.XLightsModels = modelsFile.ProcessXLightModels();
+            _showDetails.XLightsModelGroups = modelsFile.ProcessXLightsModelGroups();
 
             PlaySongWithLights();
+
+            return "";
         }
 
-        public void ControlLights()
+        private void ControlLights()
         {
-            _logger.Log(string.Concat("Now playing: {0}", _showDetails.DataFileName));
-            TimeSpan showTime = new TimeSpan(0, 0, 0, 0, 0);
+            _logger.Log(string.Concat("Now playing: ", _showDetails.EffectsFileName, " ", _showDetails.MusicFileName));
 
             using GpioController gpio = new GpioController();
+
+            _logger.Log("Setting up pins");
+            for (int pinNum = MinPinNumber; pinNum <= MaxPinNumber; pinNum++)
+            {
+#if RELEASE
+                gpio.OpenPin(pinNum, PinMode.Output);
+#endif
+            }
 
             PinValue relayOff = PinValue.High;
             PinValue relayOn = PinValue.Low;
 
-            for (int pinNum = MinPinNumber; pinNum <= MaxPinNumber; pinNum++)
-            {
-                _logger.Log("Setting up pin " + pinNum);
-                gpio.OpenPin(pinNum, PinMode.Output);
-            }
-
             Console.CancelKeyPress += (s, e) =>
             {
-                _logger.Log("Emergency shutdown");
+                _logger.Log("Emergency shutdown!");
                 SwitchAllRelays(gpio, relayOff);
             };
 
             SwitchAllRelays(gpio, relayOff);
 
+            TimeSpan showTime = new TimeSpan(0, 0, 0, 0, 0);
             int sleepInterval = 10;
             int showTimeInterval = 10;
 
-            while (showTime < _showDetails.ShowSummary.TotalTime)
+            while (showTime < _showDetails.XLightsShowSummary.TotalTime)
             {
-                var lights = _showDetails.EffectSequences.FindAll(x => x.StartTime == showTime || x.EndTime == showTime);
+                var lights = _showDetails.XLightsEffectSequences.FindAll(x => x.StartTime == showTime || x.EndTime == showTime);
 
                 foreach (var light in lights)
                 {
@@ -109,26 +121,25 @@ namespace AlmostengrLightShow
 
         private void PinLookup(GpioController control, string lightName, PinValue action)
         {
-            List<int> pinNumbers = new List<int>();
-            switch (lightName)
+            _logger.Log(string.Concat("Toggle Element ", lightName, ", ", action.ToString()));
+
+            var switchModel = _showDetails.XLightsModels.FindAll(e => e.ModelName == lightName);
+            foreach (var model in switchModel)
             {
-                case "RedTree1":
-                    pinNumbers.Add(14);
-                    break;
-
-                case "WhiteTree1":
-                    pinNumbers.Add(18);
-                    break;
-
-                default:
-                    pinNumbers.Add(new Random().Next(MinPinNumber, MaxPinNumber));
-                    break;
+#if RELEASE
+                control.Write(model.StartChannel, action);
+#endif
             }
 
-            foreach (var pinNumber in pinNumbers)
+            var switchModelGroup = _showDetails.XLightsModelGroups.FindAll(e => e.ModelName == lightName);
+            foreach (var modelGroup in switchModelGroup)
             {
-                _logger.Log(string.Concat("Toggle Relay ", lightName, " ", action.ToString()));
-                control.Write(pinNumber, action);
+                foreach (var channel in modelGroup.StartChannels)
+                {
+#if RELEASE
+                    control.Write(channel, action);
+#endif
+                }
             }
         }
 
@@ -136,10 +147,12 @@ namespace AlmostengrLightShow
         {
             Process ExternalProcess = new Process();
             ExternalProcess.StartInfo.FileName = "/usr/bin/cvlc";
+            ExternalProcess.StartInfo.ArgumentList.Add("--no-loop");
+            ExternalProcess.StartInfo.ArgumentList.Add("--no-repeat");
             ExternalProcess.StartInfo.ArgumentList.Add("--play-and-exit");
             ExternalProcess.StartInfo.ArgumentList.Add("--intf");
             ExternalProcess.StartInfo.ArgumentList.Add("dummy");
-            ExternalProcess.StartInfo.ArgumentList.Add(_showDetails.MusicFileName); // song name
+            ExternalProcess.StartInfo.ArgumentList.Add(_showDetails.MusicFileName);
             ExternalProcess.Start();
 
             ControlLights();
